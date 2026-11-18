@@ -1,0 +1,29 @@
+{
+ "version": "1.0",
+ "trained": "2026-11-18",
+ "metrics": {
+  "script": {
+   "balanced_accuracy": 0.493,
+   "auc": 0.495,
+   "n": 1499,
+   "confident_40pct_accuracy": 0.487
+  },
+  "packaging": {
+   "balanced_accuracy": 0.565,
+   "auc": 0.592,
+   "n": 8785,
+   "confident_40pct_accuracy": 0.608
+  },
+  "packaging_india": {
+   "balanced_accuracy": 0.58,
+   "auc": 0.613,
+   "n": 7286,
+   "confident_40pct_accuracy": 0.644
+  }
+ },
+ "data": {
+  "english_transcripts": 1499,
+  "packaging_titles": 8785,
+  "india_titles": 7286
+ }
+}

@@ -1,0 +1,102 @@
+{
+ "n": 1499,
+ "unseen_channels": {
+  "lr": {
+   "balanced_acc": 0.526,
+   "auc": 0.518
+  },
+  "gb": {
+   "balanced_acc": 0.474,
+   "auc": 0.463
+  },
+  "blend": {
+   "balanced_acc": 0.464,
+   "auc": 0.473
+  },
+  "blend_confident_40pct": {
+   "balanced_acc": 0.498,
+   "n": 600
+  }
+ },
+ "unseen_videos": {
+  "lr": {
+   "balanced_acc": 0.54,
+   "auc": 0.572
+  },
+  "gb": {
+   "balanced_acc": 0.526,
+   "auc": 0.542
+  },
+  "blend": {
+   "balanced_acc": 0.541,
+   "auc": 0.562
+  },
+  "blend_confident_40pct": {
+   "balanced_acc": 0.583,
+   "n": 600
+  }
+ },
+ "feature_gap": {
+  "words": 0.024,
+  "wpm": 3.881,
+  "minutes": 0.492,
+  "sent_len": -65.467,
+  "q_rate": 0.0,
+  "excl_rate": 0.0,
+  "you_rate": 0.233,
+  "i_rate": -0.231,
+  "num_rate": 0.011,
+  "diversity": 0.006,
+  "hook_q": 0.0,
+  "hook_you": 0.0,
+  "hook_num": 1.0,
+  "hook_stakes": 0.0,
+  "title_len": 0.0,
+  "title_caps": -0.004,
+  "title_num": 0.0,
+  "title_q": 0.0,
+  "title_dollar": 0.0
+ },
+ "viral_median": {
+  "words": 7.476,
+  "wpm": 162.149,
+  "minutes": 11.092,
+  "sent_len": 173.7,
+  "q_rate": 0.0,
+  "excl_rate": 0.0,
+  "you_rate": 2.774,
+  "i_rate": 3.314,
+  "num_rate": 1.422,
+  "diversity": 0.512,
+  "hook_q": 0.0,
+  "hook_you": 2.0,
+  "hook_num": 2.0,
+  "hook_stakes": 2.0,
+  "title_len": 8.0,
+  "title_caps": 0.156,
+  "title_num": 0.0,
+  "title_q": 0.0,
+  "title_dollar": 0.0
+ },
+ "flop_median": {
+  "words": 7.452,
+  "wpm": 158.268,
+  "minutes": 10.6,
+  "sent_len": 239.167,
+  "q_rate": 0.0,
+  "excl_rate": 0.0,
+  "you_rate": 2.54,
+  "i_rate": 3.545,
+  "num_rate": 1.412,
+  "diversity": 0.506,
+  "hook_q": 0.0,
+  "hook_you": 2.0,
+  "hook_num": 1.0,
+  "hook_stakes": 2.0,
+  "title_len": 8.0,
+  "title_caps": 0.16,
+  "title_num": 0.0,
+  "title_q": 0.0,
+  "title_dollar": 0.0
+ }
+}

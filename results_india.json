@@ -1,0 +1,125 @@
+{
+ "videos": 13794,
+ "channels": 510,
+ "date_from": "2017-11-14",
+ "date_to": "2018-06-14",
+ "unseen_channels": {
+  "balanced_acc": 0.615,
+  "auc": 0.664,
+  "confident_40pct_acc": 0.707
+ },
+ "unseen_videos": {
+  "balanced_acc": 0.652,
+  "auc": 0.726,
+  "confident_40pct_acc": 0.789
+ },
+ "title_lift": {
+  "has_number": {
+   "n": 8014,
+   "x_views_vs_channel": 0.97
+  },
+  "has_question": {
+   "n": 515,
+   "x_views_vs_channel": 0.94
+  },
+  "has_exclaim": {
+   "n": 731,
+   "x_views_vs_channel": 1.0
+  },
+  "has_pipe": {
+   "n": 7435,
+   "x_views_vs_channel": 1.0
+  },
+  "has_brackets": {
+   "n": 1079,
+   "x_views_vs_channel": 1.03
+  },
+  "official": {
+   "n": 252,
+   "x_views_vs_channel": 1.14
+  },
+  "episode": {
+   "n": 2211,
+   "x_views_vs_channel": 0.99
+  }
+ },
+ "categories": [
+  {
+   "category": "Shows",
+   "videos": 120,
+   "median_views": 625350.5,
+   "median_like_rate": 0.0052
+  },
+  {
+   "category": "Music",
+   "videos": 970,
+   "median_views": 554798.0,
+   "median_like_rate": 0.0171
+  },
+  {
+   "category": "Sports",
+   "videos": 263,
+   "median_views": 548476.0,
+   "median_like_rate": 0.0097
+  },
+  {
+   "category": "Film & Animation",
+   "videos": 362,
+   "median_views": 475740.5,
+   "median_like_rate": 0.014
+  },
+  {
+   "category": "Comedy",
+   "videos": 966,
+   "median_views": 396583.0,
+   "median_like_rate": 0.0383
+  },
+  {
+   "category": "Howto & Style",
+   "videos": 399,
+   "median_views": 295102.0,
+   "median_like_rate": 0.011
+  },
+  {
+   "category": "Science & Technology",
+   "videos": 256,
+   "median_views": 252675.0,
+   "median_like_rate": 0.0762
+  },
+  {
+   "category": "People & Blogs",
+   "videos": 969,
+   "median_views": 203056.0,
+   "median_like_rate": 0.0055
+  },
+  {
+   "category": "Entertainment",
+   "videos": 6534,
+   "median_views": 202209.0,
+   "median_like_rate": 0.005
+  },
+  {
+   "category": "News & Politics",
+   "videos": 2144,
+   "median_views": 153145.5,
+   "median_like_rate": 0.0057
+  },
+  {
+   "category": "Education",
+   "videos": 716,
+   "median_views": 45128.5,
+   "median_like_rate": 0.05
+  }
+ ],
+ "median_title_words": 12.0,
+ "share_hindi_script_titles": 0.15,
+ "unseen_channels_no_dates": {
+  "balanced_acc": 0.575,
+  "auc": 0.612,
+  "confident_40pct_acc": 0.641
+ },
+ "teaser_lift": 0.85,
+ "teaser_n": 1357,
+ "full_lift": 1.08,
+ "full_n": 1105
+}

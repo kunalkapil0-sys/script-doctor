@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Script Doctor (local model)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a frank script editor — direct, specific, on the creator's side.
+   IDEA: a marked-up shooting script next to the editor's retention graph.
+   PICTURE: the estimated audience-retention curve with numbered drop-off risks.
+   COLOUR and TYPE: record-red strip, paper white, teal curve; Archivo + Courier Prime for script.
+   LAYOUT: script desk left, verdict + curve right; fixes and questions below. */
+:root{color-scheme:light dark;
+ --bg:light-dark(#f6f6f3,#121315);--card:light-dark(#fff,#1b1c1f);--ink:light-dark(#151517,#ececea);
+ --mute:light-dark(#5d5d63,#a3a3aa);--line:light-dark(#e2e1dc,#2c2d31);--red:#e0352b;--redink:light-dark(#b5241b,#ff7a70);
+ --teal:light-dark(#0e7a6e,#38c6b3);--tealbg:light-dark(#e3f3f0,#10302c);--amber:light-dark(#a35d00,#f0b35a);--ambg:light-dark(#fbf0df,#33260f);--rdbg:light-dark(#fbe6e4,#3a1916)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+.band{padding:clamp(20px,3vw,40px) max(4vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+header{background:var(--red);color:#fff}
+header .wrap{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px;padding:16px max(4vw,16px)}
+header h1{font-size:clamp(26px,3.4vw,36px);line-height:1.05;margin:0;font-weight:800}
+header p{margin:0;opacity:.92;font-size:15px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+h2{font-size:20px;line-height:1.2;margin:0 0 10px}
+label{font-size:14px;color:var(--mute);display:block;margin-bottom:4px}
+.row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:12px}.r2{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}
+select,input,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px;width:100%;min-height:44px}
+textarea{font-family:"Courier Prime",monospace;line-height:1.6;min-height:360px;resize:vertical}
+:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+.stats{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--mute);margin:10px 0 14px}
+.stats b{color:var(--ink);white-space:nowrap}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+button{font:inherit;font-weight:700;min-height:44px;padding:0 18px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+button.go{background:var(--red);border-color:var(--red);color:#fff}
+button:disabled{opacity:.55;cursor:wait}
+.verdict{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.big{font-size:clamp(48px,7vw,68px);font-weight:800;line-height:1;color:var(--redink)}
+.big small{font-size:18px;color:var(--mute);font-weight:500}
+.vt{font-size:22px;font-weight:800;line-height:1.15}
+.honest{font-size:13px;color:var(--mute);margin-top:6px}
+.tag{display:inline-block;font-size:13px;padding:2px 9px;border-radius:99px;background:var(--tealbg);color:var(--teal);font-weight:700}
+.fig{position:relative;min-height:240px;margin:14px 0 6px}.fig>svg{position:absolute;inset:0;width:100%;height:100%}
+.beats{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:8px}
+.beats li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;font-size:15px}
+.dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff}
+.low{background:var(--teal)}.med{background:var(--amber)}.high{background:var(--red)}
+.bars{display:grid;gap:9px;margin-top:6px}
+.bar{display:grid;grid-template-columns:7.5em minmax(0,1fr) 2.6em;gap:10px;align-items:center;font-size:15px}
+.track{height:10px;border-radius:9px;background:var(--line);overflow:hidden}.track i{display:block;height:100%;background:var(--teal);border-radius:9px}
+.cat{grid-template-columns:8.5em minmax(0,1fr) 3.4em 3em}.cat-h{display:grid;grid-template-columns:8.5em minmax(0,1fr) 3.4em 3em;gap:10px;font-size:13px;color:var(--mute)}.cat-h span:nth-child(2){grid-column:2/4;text-align:right}.cat-h span:last-child{text-align:right}.cat span:nth-child(3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.below{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;margin-top:22px}
+.fix{border-top:1px solid var(--line);padding:14px 0}.fix:first-of-type{border-top:0;padding-top:4px}
+.fix h3{font-size:17px;margin:0 0 6px;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.pri{font-size:12px;padding:2px 8px;border-radius:99px;font-weight:700;white-space:nowrap}
+.p1{background:var(--rdbg);color:var(--redink)}.p2{background:var(--ambg);color:var(--amber)}.p3{background:var(--tealbg);color:var(--teal)}
+q,.rw{display:block;font-family:"Courier Prime",monospace;font-size:15px;padding:8px 12px;border-radius:8px;margin:6px 0}
+q{background:var(--rdbg);quotes:none}.rw{background:var(--tealbg)}
+.rw::before{content:"Try: ";font-weight:700;color:var(--teal)}
+ul.plain{margin:6px 0 0;padding-left:20px}ul.plain li{margin:6px 0}
+.muted{color:var(--mute);font-size:14px}
+.err{background:var(--rdbg);color:var(--redink);padding:10px 12px;border-radius:9px;margin-top:12px;font-size:15px}
+.load{display:inline-block;width:14px;height:14px;border:2px solid #fff;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.load{animation:none}}
+details{margin-top:14px;font-size:15px}summary{cursor:pointer;font-weight:700;min-height:32px}
+footer{color:var(--mute);font-size:14px}
+@media(max-width:860px){.grid,.below{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:600px){.cat,.cat-h{grid-template-columns:6.8em minmax(0,1fr) 3.4em 2.6em}.row,.r2{grid-template-columns:minmax(0,1fr)}textarea{min-height:260px}.verdict{grid-template-columns:minmax(0,1fr)}.bar{grid-template-columns:6.2em minmax(0,1fr) 2.4em}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Script Doctor</h1><p>Running on your own Script Doctor model, offline. Paste a script and get hook, pacing and retention notes, with a score that admits what it can't know.</p></div></header>
+
+<main class="band"><div class="wrap">
+<div class="grid">
+ <section class="card" aria-labelledby="in-h">
+  <h2 id="in-h">Your script</h2>
+  <div class="row">
+   <div><label for="plat">Format</label><select id="plat"><option value="short">Short / Reel</option><option value="long">YouTube long-form</option></select></div>
+   <div><label for="niche">Niche</label><input id="niche" value="Food & travel"></div>
+   <div><label for="aud">Audience</label><input id="aud" value="18–30, India"></div>
+  </div>
+  <div class="row r2">
+   <div><label for="mkt">Market</label><select id="mkt"><option value="india">India</option><option value="global">Global</option></select></div>
+   <div><label for="title">Planned title</label><input id="title" value="This ₹10 vada pav has a 2-hour queue"></div>
+  </div>
+  <label for="script">Script, with any scene notes</label>
+  <textarea id="script" spellcheck="true"></textarea>
+  <div class="stats" id="stats" aria-live="polite"></div>
+  <div class="btns">
+   <button class="go" id="run">Analyse script</button>
+   <button id="copy">Copy report</button>
+   <button id="clear">Clear</button>
+  </div>
+  <div id="msg"></div>
+ </section>
+
+ <section class="card" aria-labelledby="v-h">
+  <h2 id="v-h">Verdict <span class="tag" id="srcTag">Sample analysis</span></h2>
+  <div class="verdict">
+   <div class="big" id="score">–<small>/100</small></div>
+   <div><div class="vt" id="vtext"></div><div id="vsum" class="muted"></div></div>
+  </div>
+  <p class="honest" id="honest">Score = 75% craft rules + 25% title model. The title model picked hits from flops 58% of the time on Indian channels it never saw; craft and retention are rule-based estimates. A craft score, not a view forecast.</p>
+  <div class="fig" id="fig"><svg id="curve" role="img" aria-label="Estimated retention curve"></svg></div>
+  <div class="muted" id="avgret"></div>
+  <ol class="beats" id="beats"></ol>
+ </section>
+</div>
+
+<div class="below">
+ <section class="card" aria-labelledby="f-h">
+  <h2 id="f-h">What to fix first</h2>
+  <div id="tcheck"></div>
+  <div id="hook"></div>
+  <div id="fixes"></div>
+ </section>
+ <div style="display:grid;gap:22px">
+  <section class="card" aria-labelledby="i-h" id="india"><h2 id="i-h">India benchmarks</h2>
+   <p class="muted" style="margin:0 0 8px">From 13,794 Indian trending videos (Kaggle, Nov 2017 – Jun 2018), each compared with its own channel's other videos.</p>
+   <ul class="plain" style="margin-bottom:12px">
+    <li>Titles saying <b>teaser, promo, preview or trailer</b> got <b>0.85×</b> the views (1,357 videos). Promise the full thing.</li>
+    <li>"Full video / episode / song" titles got <b>1.08×</b>; "official" <b>1.14×</b>.</li>
+    <li>Hindi script vs Latin script, title length, numbers, question marks: <b>no measurable difference</b> (all 0.94–1.03×). Write the title your audience reads naturally.</li>
+   </ul>
+   <div class="cat-h"><span>Category</span><span>Median views</span><span>Like %</span></div>
+   <div class="bars" id="cats"></div>
+  </section>
+  <section class="card" aria-labelledby="s-h"><h2 id="s-h">Craft scores</h2><div class="bars" id="bars"></div></section>
+  <section class="card" aria-labelledby="k-h"><h2 id="k-h">Keep these</h2><ul class="plain" id="keep"></ul></section>
+  <section class="card" aria-labelledby="q-h"><h2 id="q-h">Questions for you</h2><p class="muted" style="margin:0">Your call, not the AI's. Answer these and the rewrite gets better.</p><ul class="plain" id="qs"></ul><ul class="plain" id="titles" hidden></ul></section>
+ </div>
+</div>
+</div></main>
+
+<footer class="band"><div class="wrap">
+ <details><summary>How the score was tested</summary>
+ <p>I took 2,800 YouTube videos from two Kaggle datasets ("YouTubers saying things" and "Mr-beast transcribed videos") labelled 1,499 of them as top 25% or bottom 25% of their own channel's views (adjusted for video age), then trained text models and tested them on videos they had never seen. Balanced accuracy: about 52% within a channel, 64% across channels from script and title alone, and 93% from subscriber count alone. So any tool claiming 85% or more from a script is mostly measuring channel size. Script Doctor scores craft instead (hook, pacing, payoff, clarity) because that's the part you control.</p>
+ <p>India: no public dataset pairs Indian scripts with views, so I used Kaggle's "Trending YouTube Video Statistics" India file (13,794 videos, 510 channels, Nov 2017 – Jun 2018), labelled each video top or bottom 25% of its own channel (adjusted for days since upload), and trained on title, tags and description. On channels the model never saw: 61.5% balanced accuracy, falling to 57.5% once month names were removed (they were picking up timing, not craft). The benchmarks above are from that data and are several years old: treat them as direction, not rules.</p></details>
+</div></footer>
+
+<script>
+{
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+const SAMPLE_SCRIPT = `[Close on a ₹10 vada pav, steam rising]
+This ₹10 vada pav has a 2-hour queue. I found out why.
+
+[Walk-up shot, Dadar station, 6:40 am]
+So I got here at 6:40 in the morning and there's already forty people in line. Forty. For a vada pav.
+
+[Interview, uncle in the queue]
+He says he's come here every day for 22 years. Every day.
+
+[Kitchen, hands shaping vadas]
+The owner, Shinde ji, let me into the kitchen. His father started this stall in 1971 with one kadai. Same kadai. Still using it.
+
+[B-roll: frying, chutney]
+The secret, he says, isn't the potato. It's the dry garlic chutney, which they grind by hand every morning. No mixer. Ever.
+
+[Me, tasting]
+Okay. I've had a lot of vada pav. This is... genuinely different. The chutney hits first, then the heat.
+
+[Wide, queue]
+So is it worth two hours? Honestly — for the chutney, yes. For the queue, come at 6.
+
+Follow for more ₹10 food that's worth the hype.`;
+
+const SAMPLE = {"verdict":"Promising","viral_score":64,"summary":"Strong curiosity hook and a real character, but the middle explains instead of showing and the payoff lands too late.",
+"avg_retention_estimate":58,
+"retention":[{"pos":0,"label":"Hook: ₹10, 2-hour queue","est":100,"risk":"low","note":"Price + queue contrast is a clean curiosity gap."},
+{"pos":15,"label":"Arrival at 6:40","est":84,"risk":"med","note":"Repeats the hook's point; the 'Forty.' beat helps but cut the setup."},
+{"pos":30,"label":"22-year regular","est":76,"risk":"low","note":"Human proof — keep, show his face fast."},
+{"pos":48,"label":"1971 origin story","est":62,"risk":"high","note":"History told, not shown. Biggest drop risk."},
+{"pos":65,"label":"The chutney secret","est":58,"risk":"med","note":"This is the real reveal — it should come earlier."},
+{"pos":82,"label":"Taste reaction","est":55,"risk":"low","note":"Honest reaction reads as credible."},
+{"pos":100,"label":"Verdict + CTA","est":50,"risk":"med","note":"'Come at 6' is a useful, shareable tip — lead the ending with it."}],
+"scores":{"hook":8,"pacing":5,"clarity":8,"payoff":6,"emotion":6,"shareability":7},
+"hook":{"score":8,"works":"Specific price and a surprising queue length in one line.","problem":"'I found out why' is a common phrasing; the stakes could be sharper.","rewrite":"40 people wait 2 hours for this ₹10 vada pav. The reason is in this jar."},
+"fixes":[{"priority":1,"issue":"The origin story slows the middle","quote":"His father started this stall in 1971 with one kadai.","suggestion":"Show the old kadai on screen and say it in under 5 words, then jump to the chutney.","example":"[Close on blackened kadai] 1971. Same kadai."},
+{"priority":2,"issue":"The secret arrives at 65% — too late for a short","quote":"The secret, he says, isn't the potato.","suggestion":"Tease the chutney in the hook and pay it off by the halfway mark.","example":"Everyone thinks it's the potato. It's not."},
+{"priority":3,"issue":"Ending CTA is generic","quote":"Follow for more ₹10 food that's worth the hype.","suggestion":"End on the tip viewers will send to a friend, then a series hook.","example":"Come at 6, skip the queue. Next week: the ₹5 chai with a 3-hour wait."}],
+"keep":["The ₹10 vs 2-hour contrast — it's the whole video in one line","Real people with numbers (22 years, 40 in line) build trust","Your honest 'is it worth it?' verdict"],
+"questions":["What did you feel when you tasted it — can you show that instead of saying 'genuinely different'?","Is there a moment in the kitchen nobody else has filmed?","Who is this video really about — the stall, Shinde ji, or the regulars?"],
+"title_check":{"score":7,"note":"Clear and specific, and it matches the hook. It gives away the queue but not the secret, which is good: viewers stay for the why.","better":"40 people wait 2 hours for this ₹10 vada pav. Here's why."},
+"titles":["40 people wait 2 hours for this ₹10 vada pav","The ₹10 vada pav with a 53-year-old secret","I queued at 6:40 am for Mumbai's most-loved vada pav"]};
+
+let last = SAMPLE, sample = null;
+const CATS = [["Shows",625351,0.52],["Music",554798,1.71],["Sports",548476,0.97],["Film & Animation",475741,1.40],["Comedy",396584,3.83],["Howto & Style",295102,1.10],["Science & Tech",252675,7.62],["People & Blogs",203056,0.55],["Entertainment",202209,0.50],["News & Politics",153146,0.57],["Education",45129,5.00]];
+const fmt = n => n >= 1e5 ? (n/1e5).toFixed(1) + " L" : Math.round(n/1e3) + "K";
+
+function stats(){
+  const t = $("script").value, w = (t.replace(/\[[^\]]*\]/g," ").match(/\S+/g)||[]).length;
+  const short = $("plat").value === "short", wpm = short ? 165 : 150, sec = Math.round(w / wpm * 60);
+  const dur = sec < 90 ? sec + " s" : Math.round(sec/60) + " min";
+  const hookN = short ? 8 : 75, first = (t.replace(/\[[^\]]*\]/g," ").match(/\S+/g)||[]).slice(0, hookN).join(" ");
+  const qs = (t.match(/\?/g)||[]).length;
+  $("stats").innerHTML = `<span>Spoken words <b>${w}</b></span><span>Runtime ≈ <b>${dur}</b></span><span>Questions <b>${qs}</b></span><span>${short?"First 3 s":"First 30 s"}: <b>${esc(first.slice(0,60))}${first.length>60?"…":""}</b></span>`;
+  try { localStorage.setItem("sd-draft", JSON.stringify({s:t,p:$("plat").value,n:$("niche").value,a:$("aud").value,m:$("mkt").value,t:$("title").value})); } catch(e){}
+}
+
+function drawCurve(){
+  const s = $("curve"), W = s.clientWidth, H = s.clientHeight, pts = (last.retention||[]);
+  if (!W || !pts.length) { s.innerHTML = ""; return; }
+  const L = W < 520 ? 40 : 44, R = 16, T = 16, B = 26, P = 16;
+  const x = p => L + P + (W - L - R - 2 * P) * p / 100, y = v => T + (H - T - B) * (1 - v / 100);
+  const sorted = [...pts].sort((a,b)=>a.pos-b.pos);
+  const line = sorted.map((p,i)=>`${i?"L":"M"}${x(p.pos).toFixed(1)},${y(p.est).toFixed(1)}`).join("");
+  const area = line + `L${x(sorted.at(-1).pos)},${y(0)}L${x(sorted[0].pos)},${y(0)}Z`;
+  const col = {low:"var(--teal)",med:"var(--amber)",high:"var(--red)"};
+  const grid = [0,25,50,75,100].map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end" font-size="12" fill="var(--mute)">${v}%</text>`).join("");
+  s.innerHTML = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--teal)" stop-opacity=".28"/><stop offset="1" stop-color="var(--teal)" stop-opacity="0"/></linearGradient></defs>${grid}
+   <path d="${area}" fill="url(#g)"/><path d="${line}" fill="none" stroke="var(--teal)" stroke-width="3" stroke-linejoin="round"/>
+   ${sorted.map((p,i)=>`<circle cx="${x(p.pos)}" cy="${y(p.est)}" r="11" fill="${col[p.risk]||col.med}" stroke="var(--card)" stroke-width="2"/><text x="${x(p.pos)}" y="${y(p.est)+4}" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">${i+1}</text>`).join("")}
+   <text x="${L}" y="${H-6}" font-size="12" fill="var(--mute)">Start</text><text x="${W-R}" y="${H-6}" font-size="12" fill="var(--mute)" text-anchor="end">End</text>`;
+}
+
+function render(r, fromSample){
+  last = r;
+  $("srcTag").textContent = fromSample === "fallback" ? "Sample (model offline)" : fromSample ? "Sample script" : "Your analysis";
+  $("score").innerHTML = `${esc(r.viral_score)}<small>/100</small>`;
+  $("vtext").textContent = r.verdict || "";
+  $("vsum").textContent = r.summary || "";
+  $("avgret").textContent = r.avg_retention_estimate != null ? `Estimated average viewed: about ${r.avg_retention_estimate}% of the video. Numbered dots are the beats below; red marks the biggest drop-off risks.` : "";
+  $("beats").innerHTML = [...(r.retention||[])].sort((a,b)=>a.pos-b.pos).map((b,i)=>`<li><span class="dot ${esc(b.risk)}">${i+1}</span><span><b>${esc(b.label)}</b> — ${esc(b.note)}</span></li>`).join("");
+  const h = r.hook || {};
+  const tc = r.title_check;
+  $("tcheck").innerHTML = tc ? `<div class="fix"><h3>Your title <span class="pri p3">${esc(tc.score)}/10</span></h3><p style="margin:0">${esc(tc.note)}</p>${tc.better?`<span class="rw">${esc(tc.better)}</span>`:""}</div>` : "";
+  $("hook").innerHTML = `<div class="fix"><h3>The hook <span class="pri p3">${esc(h.score)}/10</span></h3><p style="margin:0">${esc(h.works)} ${esc(h.problem)}</p>${h.rewrite?`<span class="rw">${esc(h.rewrite)}</span>`:""}</div>`;
+  $("fixes").innerHTML = (r.fixes||[]).map(f=>`<div class="fix"><h3>${esc(f.issue)} <span class="pri p${Math.min(3,Math.max(1,f.priority|0))}">Priority ${esc(f.priority)}</span></h3>${f.quote?`<q>${esc(f.quote)}</q>`:""}<p style="margin:6px 0">${esc(f.suggestion)}</p>${f.example?`<span class="rw">${esc(f.example)}</span>`:""}</div>`).join("");
+  const names = {hook:"Hook",pacing:"Pacing",clarity:"Clarity",payoff:"Payoff",ending:"Ending",retention:"Retention",emotion:"Emotion",shareability:"Shareability"};
+  $("bars").innerHTML = Object.entries(r.scores||{}).map(([k,v])=>`<div class="bar"><span>${esc(names[k]||k)}</span><span class="track"><i style="width:${Math.max(0,Math.min(10,+v))*10}%"></i></span><span>${esc(v)}/10</span></div>`).join("");
+  $("keep").innerHTML = (r.keep||[]).map(k=>`<li>${esc(k)}</li>`).join("");
+  $("qs").innerHTML = (r.questions||[]).map(k=>`<li>${esc(k)}</li>`).join("");
+  $("titles").innerHTML = (r.titles||[]).map(k=>`<li>${esc(k)}</li>`).join("");
+  drawCurve();
+}
+
+function prompt(){
+  const short = $("plat").value === "short";
+  return `You are Script Doctor, a frank, kind script editor for video creators. Your job is to strengthen the creator's own ideas and voice, never to replace them.
+
+Context you must respect: on 1,499 real YouTube videos, transcript text alone predicted a creator's hits vs flops only ~52% of the time (64% across channels). So your score is a CRAFT score, not a forecast. Be calibrated and tough: most scripts score 40–65; above 80 only for exceptional hooks, pacing and payoff. Never promise virality.
+
+Format: ${short ? "short-form vertical video (Shorts/Reels/TikTok, 15–90 s). The hook is the first 1–3 seconds; viewers swipe instantly; payoff must land by the midpoint or earlier; loops and rewatch value matter." : "YouTube long-form (8–20 min). The hook is the first 30 seconds; it needs a clear promise and stakes; pattern interrupts or new open loops every 30–60 s; payoff structured so the biggest reveal is late but tension is refreshed."}
+Niche: ${$("niche").value || "unspecified"}. Audience: ${$("aud").value || "unspecified"}.
+Planned title: ${$("title").value || "none given"}.
+${$("mkt").value === "india" ? `Market: INDIA. The script may be in Hindi, Hinglish (Hindi in Latin script mixed with English), or a regional language: judge it in its own language, quote it exactly, and write every rewrite in the same language and mix the creator uses — never translate it into formal Hindi or pure English. Watch for: local specificity (city, price in ₹, family and festival moments) as hooks; natural code-switching; relatable middle-class stakes.
+Data from 13,794 Indian trending videos (2017–18, each vs its own channel): titles with teaser/promo/preview/trailer got 0.85× views; "full video/episode/song" 1.08×; "official" 1.14×; Hindi vs Latin script, title length, numbers and question marks made no measurable difference. Use these only as light evidence and say they are old.` : "Market: global, English-first."}
+
+Judge: hook strength, open loops / curiosity gaps, pacing (telling vs showing, repetition, dead air), clarity, emotional beats, payoff timing, shareability (would someone send this to a friend?), and the ending/CTA.
+For the retention curve, split the script into 5–9 beats in order; pos is the beat's position 0–100 through the video; est is the estimated % of starting viewers still watching (first beat 100, never rising). risk is low|med|high drop-off risk at that beat.
+Quote the creator's EXACT lines in "quote". Every rewrite must keep their language, tone and facts; offer it as an option. Give 3–5 fixes, highest impact first. Questions should push the creator's own thinking (what only they saw or felt), not ask for info you could guess.
+
+Reply with ONLY this JSON, no prose, no markdown fence:
+{"verdict":"Strong potential|Promising|Needs work|Unlikely to hold viewers","viral_score":0-100,"summary":"one sentence","avg_retention_estimate":0-100,
+"retention":[{"pos":0,"label":"short beat name","est":100,"risk":"low","note":"one sentence"}],
+"scores":{"hook":0-10,"pacing":0-10,"clarity":0-10,"payoff":0-10,"emotion":0-10,"shareability":0-10},
+"hook":{"score":0-10,"works":"one sentence","problem":"one sentence","rewrite":"a stronger opening line in their voice"},
+"fixes":[{"priority":1,"issue":"short title","quote":"exact line from the script","suggestion":"what to change and why","example":"rewritten line"}],
+"keep":["strength to protect"],"questions":["question for the creator"],"titles":["title idea"],
+"title_check":{"score":0-10,"note":"one or two sentences on the planned title vs the script's real payoff","better":"an improved title in the same language"}}
+
+SCRIPT:
+"""
+${$("script").value}
+"""`;
+}
+
+function valid(r){ return r && typeof r === "object" && Array.isArray(r.retention) && r.scores && r.hook; }
+
+function toView(m){
+  const fx = m.fixes || [], pk = m.packaging;
+  const hookFixes = fx.filter(f => /hook|greeting/i.test(f.issue));
+  const titleFix = fx.find(f => /^Title/i.test(f.issue));
+  return {
+    viral_score: m.score, verdict: m.verdict,
+    summary: `Craft ${m.craft_score}/100` + (pk ? ` · title ranks above ${pk.percentile}% of training titles` : " · add a title to score it") + ` · about ${m.runtime_seconds} s of speech`,
+    avg_retention_estimate: m.avg_retention_estimate,
+    retention: m.retention.map(b => ({ pos: b.pos, label: b.label, est: b.est, risk: b.risk, note: b.reasons.length ? b.reasons.join(", ") + "." : "Moves well." })),
+    scores: m.scores,
+    hook: { score: m.hook.score, works: m.hook.score >= 7 ? "Your opening creates curiosity." : "", problem: hookFixes.map(f => f.suggestion).join(" "), rewrite: (fx.find(f => f.example) || {}).example || "" },
+    fixes: fx.filter(f => !hookFixes.includes(f) && f !== titleFix),
+    keep: m.keep, questions: m.questions, titles: [],
+    title_check: pk ? { score: Math.round(pk.percentile / 10), note: `The title model ranks this above ${pk.percentile}% of titles it trained on (tested at ${Math.round(pk.tested_accuracy * 100)}% accuracy).` + (titleFix ? " " + titleFix.suggestion : ""), better: "" } : null,
+  };
+}
+
+async function callModel(){
+  const res = await fetch("/analyze", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ script: $("script").value, title: $("title").value, format: $("plat").value, market: $("mkt").value }) });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok) throw { message: j.error || `The model server answered ${res.status}.` };
+  return toView(j);
+}
+
+async function run(){
+  const text = $("script").value.trim();
+  if (text.split(/\s+/).length < 20) { $("msg").innerHTML = `<div class="err">Paste at least a few lines of script first.</div>`; return; }
+  const b = $("run"); b.disabled = true; b.innerHTML = `<span class="load"></span>Reading your script…`; $("msg").innerHTML = "";
+  try {
+    const r = await callModel();
+    if (!valid(r)) throw { message: "The analysis came back incomplete. Try again." };
+    render(r, false);
+    $("v-h").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  } catch (e) {
+    const m = e instanceof TypeError ? "Can't reach the model. Start it with: python -m scriptdoctor --serve 8000"
+      : (e && e.message) || "Something went wrong. Try again.";
+    $("msg").innerHTML = `<div class="err">${esc(m)}</div>`;
+  } finally { b.disabled = false; b.textContent = "Analyse script"; }
+}
+
+function report(){
+  const r = last;
+  return [`SCRIPT DOCTOR — ${r.verdict} (${r.viral_score}/100 craft score)`, r.summary, "",
+   r.title_check ? `Title ${r.title_check.score}/10: ${r.title_check.note}` + (r.title_check.better ? ` Try: ${r.title_check.better}` : "") : "",
+   `Hook ${r.hook.score}/10: ${r.hook.works} ${r.hook.problem}`.trim(), r.hook.rewrite ? `Try: ${r.hook.rewrite}` : "", "",
+   "Retention beats:", ...[...r.retention].sort((a,b)=>a.pos-b.pos).map((b,i)=>`${i+1}. ${b.label} (~${b.est}%, ${b.risk} risk) — ${b.note}`), "",
+   "Fixes:", ...(r.fixes||[]).map(f=>`P${f.priority} ${f.issue}` + (f.quote ? `\n  "${f.quote}"` : "") + `\n  ${f.suggestion}` + (f.example ? `\n  Try: ${f.example}` : "")), "",
+   "Keep: " + (r.keep||[]).join("; "), "Questions: " + (r.questions||[]).join(" | "), "Titles: " + (r.titles||[]).join(" | "),
+   "", "Script Doctor model v1 (local). Craft score, not a view forecast."].join("\n");
+}
+
+$("run").addEventListener("click", run);
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(report()); $("copy").textContent = "Copied"; }
+  catch (e) { $("copy").textContent = "Copy blocked"; }
+  setTimeout(() => $("copy").textContent = "Copy report", 1600);
+});
+$("clear").addEventListener("click", () => { $("script").value = ""; stats(); $("script").focus(); });
+["script","plat","niche","aud","mkt","title"].forEach(id => $(id).addEventListener("input", stats));
+
+let saved = null; try { saved = JSON.parse(localStorage.getItem("sd-draft") || "null"); } catch(e){}
+if (saved && saved.s) { $("script").value = saved.s; $("plat").value = saved.p || "short"; $("niche").value = saved.n || ""; $("aud").value = saved.a || ""; if (saved.m) $("mkt").value = saved.m; if (saved.t != null) $("title").value = saved.t; }
+else $("script").value = SAMPLE_SCRIPT;
+$("cats").innerHTML = CATS.map(([c,v,l]) => `<div class="bar cat"><span>${c}</span><span class="track"><i style="width:${v/CATS[0][1]*100}%"></i></span><span>${fmt(v)}</span><span>${l.toFixed(1)}</span></div>`).join("");
+const showIndia = () => { $("india").hidden = $("mkt").value !== "india"; };
+$("mkt").addEventListener("change", showIndia);
+stats(); showIndia();
+callModel().then(r => render(r, true)).catch(() => { render(SAMPLE, "fallback"); $("msg").innerHTML = `<div class="err">Can't reach the model. Start it with: python -m scriptdoctor --serve 8000</div>`; });
+new ResizeObserver(drawCurve).observe($("curve"));
+
+
+}
+</script>
+</body>
+</html>

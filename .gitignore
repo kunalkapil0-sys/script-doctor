@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.claude/
+site/
+# Kaggle CSVs are large (~91 MB); see README "Data" to download them
+data/*.csv
+data/*.json
